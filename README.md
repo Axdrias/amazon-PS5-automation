@@ -6,9 +6,10 @@ Example: script to buy a PS5 on Amazon (Please do not use this script for scalpi
 
 forked from yosh1/amazon-automation
 
-Updates: 
+Development: 
 --- 
-  * Solves for CAPTCHA
+## TODO: 
+Detect when Amazon sends to captcha by detecting for text on the captcha page. After detecting, call the `validate_captcha` function. 
 
 Requirements: 
 --- 

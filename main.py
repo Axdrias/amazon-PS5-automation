@@ -1,20 +1,16 @@
-#coding: utf-8
+# coding: utf-8
 
-import time
-import os
-import amazonBot
-from os.path import join, dirname
-from datetime import datetime
-from selenium import webdriver
-from logger import logger
 from dotenv import load_dotenv
+from logger import logger
+from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 
-DELAY = 32
+import amazonBot
 
 load_dotenv(verbose=True)
 dotenv_path = '.env'
 load_dotenv(dotenv_path)
+
 
 def launch():
     d = DesiredCapabilities.CHROME
@@ -28,9 +24,8 @@ def launch():
     opt.add_argument("--remote-debugging-port=921")
     opt.add_argument("--disable-webgl")
     opt.add_argument("--disable-popup-blocking")
-    browser = webdriver.Chrome('chromedriver' ,options=opt,desired_capabilities=d)
-    #opt.add_argument("--user-data-dir=selenium") # added this option to use cookies, you may need to perform initial login within Selenium
-    browser = webdriver.Chrome('./chromedriver' ,options=opt,desired_capabilities=d)
+    browser = webdriver.Chrome('chromedriver', options=opt, desired_capabilities=d)
+    # opt.add_argument("--user-data-dir=selenium") # added this option to use cookies, you may need to perform initial login within Selenium
     browser.implicitly_wait(10)
     browser.set_page_load_timeout(5)
     logger.info('Started Chrome')
@@ -49,15 +44,12 @@ if __name__ == '__main__':
         done = False
         while(not done):
             try:
-                # Solve Captcha
-                amazonBot.validate_captcha(b)
                 # Navigate to the item and buy if checks pass
                 if amazonBot.purchase_item(b):
                     done = True
                     logger.info("Successfully purchased item")
             except Exception as e:
                 logger.error('ERROR: {}'.format(e))
-            time.sleep(DELAY)
     finally:
         logger.info('Closing Chromium')
         try:
