@@ -13,7 +13,7 @@ from selenium.webdriver import DesiredCapabilities
 DELAY = 32
 
 load_dotenv(verbose=True)
-dotenv_path = join(dirname(__file__), '.env')
+dotenv_path = '.env'
 load_dotenv(dotenv_path)
 
 def launch():
@@ -28,8 +28,7 @@ def launch():
     opt.add_argument("--remote-debugging-port=921")
     opt.add_argument("--disable-webgl")
     opt.add_argument("--disable-popup-blocking")
-    opt.add_argument("--user-data-dir=selenium") # added this option to use cookies, you may need to perform initial login within Selenium
-    browser = webdriver.Chrome('./chromedriver' ,options=opt,desired_capabilities=d)
+    browser = webdriver.Chrome('chromedriver' ,options=opt,desired_capabilities=d)
     browser.implicitly_wait(10)
     browser.set_page_load_timeout(5)
     logger.info('Started Chrome')
@@ -42,14 +41,6 @@ if __name__ == '__main__':
         b.get(amazonBot.ITEM_URL)
     except Exception as inst:
         logger.error('Failed to open browser: {}'.format(format(inst)))
-        exit()
-
-    # Log in
-    try:
-        amazonBot.login(b)
-    except Exception as e:
-        logger.error('Error Could not login: {}'.format(e))
-        exit()
 
     # Item purchasing logic
     try:
@@ -57,14 +48,11 @@ if __name__ == '__main__':
         while(not done):
             try:
                 # Navigate to the item and buy if checks pass
-                amazonBot.purchase_item(b)
-                done = True
-                logger.info("Successfully purchased item")
-            except BaseException:
-                pass
+                if amazonBot.purchase_item(b):
+                    done = True
+                    logger.info("Successfully purchased item")
             except Exception as e:
                 logger.error('ERROR: {}'.format(e))
-            time.sleep(DELAY)
     finally:
         logger.info('Closing Chromium')
         try:
